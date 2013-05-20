@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import fr.sciencesu.scannstockmobile.SCANNEUR.R;
  
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import fr.sciencesu.scannstockmobile.SCANNEUR.R;
  
 public class LocalisationActivity extends Activity implements OnClickListener, LocationListener{
 	
@@ -41,24 +40,24 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
  
-        //On spécifie que l'on va avoir besoin de gérer l'affichage du cercle de chargement
+        //On spï¿½cifie que l'on va avoir besoin de gï¿½rer l'affichage du cercle de chargement
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
  
         setContentView(R.layout.localisation);
  
-        //On récupère le service de localisation
+        //On rï¿½cupï¿½re le service de localisation
         lManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
  
-        //Initialisation de l'écran
+        //Initialisation de l'ï¿½cran
         reinitialisationEcran();
  
-        //On affecte un écouteur d'évènement aux boutons
+        //On affecte un ï¿½couteur d'ï¿½vï¿½nement aux boutons
         findViewById(R.id.choix_source).setOnClickListener(this);
         findViewById(R.id.obtenir_position).setOnClickListener(this);
         findViewById(R.id.afficherAdresse).setOnClickListener(this);
     }
  
-        //Méthode déclencher au clique sur un bouton
+        //Mï¿½thode dï¿½clencher au clique sur un bouton
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.choix_source:
@@ -74,7 +73,7 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 			Toast.makeText(getApplicationContext(), "departement = " + choiceDepartement, Toast.LENGTH_LONG).show();
 			
 			if(choiceDepartement != null){
-				//On envoi un évènement pour afficher la carte
+				//On envoi un ï¿½vï¿½nement pour afficher la carte
 				Intent i = new Intent(LocalisationActivity.this,MapActivity.class);
 				startActivity(i);
 			}
@@ -84,7 +83,7 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 		}
 	}
  
-	//Réinitialisation de l'écran
+	//Rï¿½initialisation de l'ï¿½cran
 	private void reinitialisationEcran(){
 		((TextView)findViewById(R.id.latitude)).setText("0.0");
 		((TextView)findViewById(R.id.longitude)).setText("0.0");
@@ -106,7 +105,7 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 		for(String provider : providers)
 			sources[i++] = provider;
  
-		//On affiche la liste des sources dans une fenêtre de dialog
+		//On affiche la liste des sources dans une fenï¿½tre de dialog
 		//Pour plus d'infos sur AlertDialog, vous pouvez suivre le guide
 		//http://developer.android.com/guide/topics/ui/dialogs.html
 		new AlertDialog.Builder(LocalisationActivity.this)
@@ -146,7 +145,7 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 					                choiceDepartement = (position+1<10)?"0"+position+1:position+1+"";			    			
 					    			
 					    			if(choiceDepartement != null){
-					    				//On envoi un évènement pour afficher la carte
+					    				//On envoi un ï¿½vï¿½nement pour afficher la carte
 					    				Intent i = new Intent(LocalisationActivity.this,MapActivity.class);
 					    				startActivity(i);
 					    			}
@@ -164,7 +163,7 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 					findViewById(R.id.obtenir_position).setEnabled(true);
 					//on stock le choix de la source choisi
 					choix_source = sources[which];
-					//on ajoute dans la barre de titre de l'application le nom de la source utilisé
+					//on ajoute dans la barre de titre de l'application le nom de la source utilisï¿½
 					setTitle(String.format("%s - %s", getString(R.string.app_name),
 						choix_source));
 				}
@@ -174,18 +173,18 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 	}
  
 	private void obtenirPosition() {
-		//on démarre le cercle de chargement
+		//on dï¿½marre le cercle de chargement
 		setProgressBarIndeterminateVisibility(true);
  
 		//On demande au service de localisation de nous notifier tout changement de position
 		//sur la source (le provider) choisie, toute les minutes (60000millisecondes).
-		//Le paramètre this spécifie que notre classe implémente LocationListener et recevra
+		//Le paramï¿½tre this spï¿½cifie que notre classe implï¿½mente LocationListener et recevra
 		//les notifications.
 		lManager.requestLocationUpdates(choix_source, 60000, 0, this);
 	}
  
 	private void afficherLocation() {
-		//On affiche les informations de la position a l'écran
+		//On affiche les informations de la position a l'ï¿½cran
 		((TextView)findViewById(R.id.latitude)).setText(String.valueOf(location.getLatitude()));
 		((TextView)findViewById(R.id.longitude)).setText(String.valueOf(location.getLongitude()));
 		((TextView)findViewById(R.id.altitude)).setText(String.valueOf(location.getAltitude()));
@@ -194,11 +193,11 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 	private void afficherAdresse() {
 		setProgressBarIndeterminateVisibility(true);
  
-		//Le geocoder permet de récupérer ou chercher des adresses
-		//gràce à un mot clé ou une position
+		//Le geocoder permet de rï¿½cupï¿½rer ou chercher des adresses
+		//grï¿½ce ï¿½ un mot clï¿½ ou une position
 		Geocoder geo = new Geocoder(LocalisationActivity.this);
 		try {
-			//Ici on récupère la premiere adresse trouvé gràce à la position que l'on a récupéré
+			//Ici on rï¿½cupï¿½re la premiere adresse trouvï¿½ grï¿½ce ï¿½ la position que l'on a rï¿½cupï¿½rï¿½
 			List
 <Address> adresses = geo.getFromLocation(location.getLatitude(),
 					location.getLongitude(),1);
@@ -215,11 +214,11 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 			}
 			else {
 				//sinon on affiche un message d'erreur
-				((TextView)findViewById(R.id.adresse)).setText("L'adresse n'a pu être déterminée");
+				((TextView)findViewById(R.id.adresse)).setText("L'adresse n'a pu ï¿½tre dï¿½terminï¿½e");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			((TextView)findViewById(R.id.adresse)).setText("L'adresse n'a pu être déterminée");
+			((TextView)findViewById(R.id.adresse)).setText("L'adresse n'a pu ï¿½tre dï¿½terminï¿½e");
 		}
 		//on stop le cercle de chargement
 		setProgressBarIndeterminateVisibility(false);
@@ -227,7 +226,7 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
  
 	public void onLocationChanged(Location location) {
 		//Lorsque la position change...
-		Log.i("Tuto géolocalisation", "La position a changé.");
+		Log.i("Tuto gï¿½olocalisation", "La position a changï¿½.");
 		//... on stop le cercle de chargement
 		setProgressBarIndeterminateVisibility(false);
 		//... on active le bouton pour afficher l'adresse
@@ -236,28 +235,28 @@ public class LocalisationActivity extends Activity implements OnClickListener, L
 		this.location = location;
 		//... on l'affiche
 		afficherLocation();
-		//... et on spécifie au service que l'on ne souhaite plus avoir de mise à jour
+		//... et on spï¿½cifie au service que l'on ne souhaite plus avoir de mise ï¿½ jour
 		lManager.removeUpdates(this);
 	}
  
 	public void onProviderDisabled(String provider) {
-		//Lorsque la source (GSP ou réseau GSM) est désactivé
-		Log.i("Tuto géolocalisation", "La source a été désactivé");
-		//...on affiche un Toast pour le signaler à l'utilisateur
+		//Lorsque la source (GSP ou rï¿½seau GSM) est dï¿½sactivï¿½
+		Log.i("Tuto gï¿½olocalisation", "La source a ï¿½tï¿½ dï¿½sactivï¿½");
+		//...on affiche un Toast pour le signaler ï¿½ l'utilisateur
 		Toast.makeText(LocalisationActivity.this,
-				String.format("La source \"%s\" a été désactivé", provider),
+				String.format("La source \"%s\" a ï¿½tï¿½ dï¿½sactivï¿½", provider),
 				Toast.LENGTH_SHORT).show();
-		//... et on spécifie au service que l'on ne souhaite plus avoir de mise à jour
+		//... et on spï¿½cifie au service que l'on ne souhaite plus avoir de mise ï¿½ jour
 		lManager.removeUpdates(this);
 		//... on stop le cercle de chargement
 		setProgressBarIndeterminateVisibility(false);
 	}
  
 	public void onProviderEnabled(String provider) {
-		Log.i("Tuto géolocalisation", "La source a été activé.");
+		Log.i("Tuto gï¿½olocalisation", "La source a ï¿½tï¿½ activï¿½.");
 	}
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		Log.i("Tuto géolocalisation", "Le statut de la source a changé.");
+		Log.i("Tuto gï¿½olocalisation", "Le statut de la source a changï¿½.");
 	}
 
 }

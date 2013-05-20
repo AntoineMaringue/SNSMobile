@@ -1,23 +1,89 @@
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
-import java.net.InetAddress;
-import java.net.Socket;
-
-import fr.sciencesu.scannstockmobile.DAO.Base;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ConnexionActivity extends Activity 
 {
-	Button btnConnexion;
+	private Button btn;
+    private Spinner lstSite;
+    String isbn = "";    
+    String IP = "192.168.1.86";
+    int PORT = 5000;
+    
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.configurations);
+        
+        //edt_isbn = (EditText) findViewById(R.id.edtisbn);
+        //edt_reply = (TextView) findViewById(R.id.edtreply);       
+        lstSite = (Spinner)findViewById(R.id.spinsites);      
+        
+        
+        btn = (Button) findViewById(R.id.btnconnexionbase);
+        //btn.setEnabled(false);
+        btn.setOnClickListener(new View.OnClickListener() 
+        {
+            public void onClick(View v) 
+            {            	
+                isbn = "lstSite"; //edt_isbn.getText().toString();
+            	Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + IP + " sur le port : " + PORT, Toast.LENGTH_LONG).show();
+                Client c = new Client(IP,PORT,"lstSite\n");
+                String datasServer = c.getResponseLine();
+               // edt_reply.setText(datasServer);
+
+                Collection<String>  dataLst = new ArrayList<String>();
+                for (String string : datasServer.split("\n")) {
+                        dataLst.add(string);
+                }
+                generateLstSite(dataLst);
+                
+                                //Thread t = new Thread(c);
+                                //t.start();
+                                
+            }
+        });
+        
+    }
+
+    private void generateLstSite(Collection<String> data) {
+            
+                List<String> list = new ArrayList<String>();
+                list.addAll(data);
+                ArrayAdapter<String> dataAdapter;
+                dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                lstSite.setAdapter(dataAdapter);
+        
+            }
+}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /*Button btnConnexion;
 	EditText edtId, edtMdp;
 	
 	@Override
@@ -60,4 +126,4 @@ public class ConnexionActivity extends Activity
 		return r;
 	}
 
-}
+}*/

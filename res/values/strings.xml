@@ -55,4 +55,11 @@
   <string name="menu_settings">Setting</string>
   <string name="hello_world">Hello</string>
   
+  <string name="configuration_serveur">Configuration Serveur</string>
+    <string name="connex_bdd">Connexion</string>
+    <string name="txt_lst_sites">Listes des sites :</string>
+    <string name="txt_id">Id</string>
+    <string name="txt_mdp">Mot de passe :</string>
+    <string name="btn_validation_config">Validation</string>
+  
 </resources>

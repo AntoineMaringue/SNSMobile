@@ -11,7 +11,7 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 
 import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.ClientBis;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 
 import android.content.Intent;
@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
 
 public class CaptureActivity extends DecoderActivity 
 {
@@ -60,16 +61,31 @@ public class CaptureActivity extends DecoderActivity
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
-            	Toast.makeText(getApplicationContext(), "Envoi " + isbn + " � " + ScanNStock.__IP + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+                
+            	Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + ScanNStock.__IP 
+                        + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 				
-            	Client c = new Client(ScanNStock.__IP,ScanNStock.__PORT);
+            	
+		//Les données envoyés au serveur
+                // ISBN le code scanné
+                // Choice Département pour trouvé le bon stock dans la base de données
+                 String data = isbn+";"+(LocalisationActivity.choiceDepartement) != null?LocalisationActivity.choiceDepartement:"69";
+                
+                //Création du client pour envoyer les données au serveur de création de produit
+                Client c = new Client(ScanNStock.__IP,Integer.parseInt(ScanNStock.__PORT),data);
+                
+                //Lecture des données renvoyée par le serveur
+                Toast.makeText(getApplicationContext(),c.getResponseLine(), Toast.LENGTH_LONG).show();
+            	/*Toast.makeText(getApplicationContext(), "Envoi " + isbn + " � " + ScanNStock.__IP + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+				
+            	ClientBis c = new ClientBis(ScanNStock.__IP,ScanNStock.__PORT);
 				
 				String data = isbn.toString()+";"+(LocalisationActivity.choiceDepartement) != null?LocalisationActivity.choiceDepartement:"69";
 				
 				boolean reply = c.sendToServer(data);
 				if(reply)
 				{
-					Toast.makeText(getApplicationContext(), "Produit trouv� et enregistr� dans la base ! " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Produit trouv� et enregistr� dans la base ! " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 					
 				}
 				else
@@ -77,7 +93,7 @@ public class CaptureActivity extends DecoderActivity
 					Toast.makeText(getApplicationContext(), "Le produit  est introuvable !" + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 					
 				}
-            	
+            	*/
             }
         });
         

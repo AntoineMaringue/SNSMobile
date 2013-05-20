@@ -1,17 +1,14 @@
 package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
 import java.util.ArrayList;
-
-import fr.sciencesu.scannstockmobile.API.ScanneurBarreCode;
 import fr.sciencesu.scannstockmobile.API.ShoppingApi;
-import fr.sciencesu.scannstockmobile.DAO.Base;
-import fr.sciencesu.scannstockmobile.DAO.IBase;
 
 
-public class ScanNStock implements IScanNStock
+
+public class ScanNStock 
 {
-	public static String __IP = "192.168.1.40" , __PORT = "86380";
-	private ScanneurBarreCode _scanner;
+	public static String __IP = "192.168.1.86" , __PORT = "5000";
+	/*private ScanneurBarreCode _scanner;
 	private IBase _basePersoScanNStock;
 	private ShoppingApi _shop;
 	private String _productName;
@@ -36,7 +33,7 @@ public class ScanNStock implements IScanNStock
 	@Override
 	public void takePhoto() 
 	{
-		//Fonction Androïd
+		//Fonction Androï¿½d
 	}
 
 	@Override
@@ -66,5 +63,5 @@ public class ScanNStock implements IScanNStock
 		scanBarCode();
 		getInfosProduct();
 		InsertToBase();
-	}
+	}*/
 }

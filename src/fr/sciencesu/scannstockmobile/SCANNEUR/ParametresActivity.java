@@ -1,7 +1,7 @@
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
 import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.ClientBis;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 import android.app.Activity;
 import android.os.Bundle;
@@ -33,23 +33,25 @@ public class ParametresActivity extends Activity
 			{
 				ScanNStock.__IP = ip.getText().toString();		    	
 				ScanNStock.__PORT = port.getText().toString();
-				Toast.makeText(getApplicationContext(), "Changements validés IP : " + ScanNStock.__IP + " Port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), "Changements valides IP : " + ScanNStock.__IP + " Port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 			
-				Client c = new Client(ScanNStock.__IP,ScanNStock.__PORT);
+                                //retour Ã  l'activitÃ© de configuration 
+                                ParametresActivity.this.finish();
+				/*ClientBis c = new ClientBis(ScanNStock.__IP,ScanNStock.__PORT);
 				
 				String data = "123456789"+";"+"69";
 				
 				boolean reply = c.sendToServer(data);
 				if(reply)
 				{
-					Toast.makeText(getApplicationContext(), "Produit trouvé et enregistré dans la base ! " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Produit trouvï¿½ et enregistrï¿½ dans la base ! " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 					
 				}
 				else
 				{
 					Toast.makeText(getApplicationContext(), "Le produit  est introuvable !" + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 					
-				}
+				}*/
 			}
 		});
 	}
