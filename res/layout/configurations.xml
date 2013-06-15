@@ -19,12 +19,12 @@
 	android:text="@string/connex_bdd"
 	android:layout_x="28dp"
 	android:layout_y="74dp" />
-<TableRow
-	android:id="@+id/widget69"
-	android:layout_width="fill_parent"
+<Spinner
+	android:id="@+id/spinstock"
+	android:layout_width="180dp"
 	android:layout_height="wrap_content"
-	android:orientation="horizontal">
-</TableRow>
+	android:layout_x="113dp"
+	android:layout_y="80dp" />
 <TextView
 	android:id="@+id/txtlstsite"
 	android:layout_width="wrap_content"
@@ -38,6 +38,7 @@
 	android:layout_height="wrap_content"
 	android:layout_x="113dp"
 	android:layout_y="120dp" />
+
 <TextView
 	android:id="@+id/txtusername"
 	android:layout_width="wrap_content"
@@ -79,4 +80,12 @@
 	android:text="@string/btn_validation_config"
 	android:layout_x="23dp"
 	android:layout_y="372dp" />
+
+<Button
+	android:id="@+id/btntestgoproduct"
+	android:layout_width="275dp"
+	android:layout_height="wrap_content"
+	android:text="go"
+	android:layout_x="23dp"
+	android:layout_y="420dp" />
 </TableLayout>

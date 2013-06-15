@@ -1,7 +1,5 @@
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
-import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.ClientBis;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 import android.app.Activity;
 import android.os.Bundle;

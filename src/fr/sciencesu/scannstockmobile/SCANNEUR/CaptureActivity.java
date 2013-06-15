@@ -11,7 +11,6 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 
 import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.ClientBis;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 
 import android.content.Intent;
@@ -72,10 +71,14 @@ public class CaptureActivity extends DecoderActivity
                  String data = isbn+";"+(LocalisationActivity.choiceDepartement) != null?LocalisationActivity.choiceDepartement:"69";
                 
                 //Création du client pour envoyer les données au serveur de création de produit
-                Client c = new Client(ScanNStock.__IP,Integer.parseInt(ScanNStock.__PORT),data);
+                //Client c = new Client(ScanNStock.__IP,Integer.parseInt(ScanNStock.__PORT),data);
                 
                 //Lecture des données renvoyée par le serveur
-                Toast.makeText(getApplicationContext(),c.getResponseLine(), Toast.LENGTH_LONG).show();
+                
+                ConnexionActivity.c.setISBN(isbn);
+                ConnexionActivity.c.data = "3";
+                ConnexionActivity.c.setEvent(true);
+                Toast.makeText(getApplicationContext(), ConnexionActivity.c.getResponseLine(), Toast.LENGTH_LONG).show();
             	/*Toast.makeText(getApplicationContext(), "Envoi " + isbn + " � " + ScanNStock.__IP + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 				
             	ClientBis c = new ClientBis(ScanNStock.__IP,ScanNStock.__PORT);
@@ -97,7 +100,7 @@ public class CaptureActivity extends DecoderActivity
             }
         });
         
-        Button bl = (Button) findViewById(R.id.btn_loc);
+        /*Button bl = (Button) findViewById(R.id.btn_loc);
         bl.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
@@ -106,7 +109,7 @@ public class CaptureActivity extends DecoderActivity
             	startActivity(i);
             	//ledon();
             }
-        });
+        });*/
     }
     
     Camera cam;

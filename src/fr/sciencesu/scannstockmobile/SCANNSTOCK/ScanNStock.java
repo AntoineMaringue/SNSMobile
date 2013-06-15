@@ -8,6 +8,7 @@ import fr.sciencesu.scannstockmobile.API.ShoppingApi;
 public class ScanNStock 
 {
 	public static String __IP = "192.168.1.86" , __PORT = "5000";
+        public static String __SITE , __STOCK;
 	/*private ScanneurBarreCode _scanner;
 	private IBase _basePersoScanNStock;
 	private ShoppingApi _shop;
