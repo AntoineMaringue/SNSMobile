@@ -21,6 +21,11 @@ public class ParametresActivity extends Activity
 		
 		ip = (EditText)findViewById(R.id.edtIp);
 		port = (EditText)findViewById(R.id.edtPort);
+                
+                if(ScanNStock.__IP != null)
+                    ip.setText(ScanNStock.__IP);
+                if(ScanNStock.__PORT != null)
+                    port.setText(ScanNStock.__PORT);
 		
 		savedParams = (Button) findViewById(R.id.btnSavedParams);
 

@@ -1,7 +1,10 @@
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -95,6 +98,8 @@ public class ConnexionActivity extends Activity {
             }
         });
     }
+    
+    
 
     private void clickConnexionBdd() {
         btn_connexion.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +139,7 @@ public class ConnexionActivity extends Activity {
                 c.data = "2";
                c.setEvent(true);
                 try {
-                    Thread.sleep(15000);
+                    Thread.sleep(12000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -150,8 +155,8 @@ public class ConnexionActivity extends Activity {
             {
                 String id,mdp,site,datas;
                 
-                id = edt_user.getText().toString();
-                mdp = edt_mdp.getText().toString();
+                //id = edt_user.getText().toString();
+                //mdp = edt_mdp.getText().toString();
                 site = lstSite.getSelectedItem().toString();
                 /*datas = "validateData;"+ id +";"+mdp + ";"+site+"\n";
                 
@@ -164,17 +169,27 @@ public class ConnexionActivity extends Activity {
                 
                  Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();*/
                 
-                c.setId(id);
-                c.setMdp(mdp);
+                //c.setId(id);
+                //c.setMdp(mdp);
+                c.setId(site);
                 c.data = "1";
                c.setEvent(true);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
                 }
                String datasServer = c.getResponseLine();
-                Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Sauvegarde de l'id " + datasServer, Toast.LENGTH_LONG).show();
+                
+                //Enregistrements du site et du stock lié au site
+                ScanNStock.__SITE = site;
+                //Insertion du stock de l'association
+                ScanNStock.__STOCK = datasServer;
+                
+                //Ouverture de la page principale
+                Intent intent = new Intent(ConnexionActivity.this, ListViewCustomActivity.class);
+                 startActivity(intent);
             }
         });}
 

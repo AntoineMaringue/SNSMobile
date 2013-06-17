@@ -1,4 +1,3 @@
-
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
 import java.text.DateFormat;
@@ -13,11 +12,8 @@ import com.google.zxing.ResultMetadataType;
 import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,24 +24,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class CaptureActivity extends DecoderActivity 
-{
+public class CaptureActivity extends DecoderActivity {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
     private static final Set<ResultMetadataType> DISPLAYABLE_METADATA_TYPES = EnumSet.of(ResultMetadataType.ISSUE_NUMBER, ResultMetadataType.SUGGESTED_PRICE,
             ResultMetadataType.ERROR_CORRECTION_LEVEL, ResultMetadataType.POSSIBLE_COUNTRY);
-
     private TextView statusView = null;
     private View resultView = null;
     private boolean inScanMode = false;
-    
     private Button btn;
     private String isbn;
+    private Client c;
 
     @Override
-    public void onCreate(Bundle icicle) 
-    {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.capture);
         //Log.v(TAG, "onCreate()");
@@ -54,80 +50,60 @@ public class CaptureActivity extends DecoderActivity
         statusView = (TextView) findViewById(R.id.status_view);
 
         inScanMode = false;
-        
+
         btn = (Button) findViewById(R.id.btn_search);
         btn.setEnabled(false);
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	
-                
-            	Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + ScanNStock.__IP 
+
+
+                Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + ScanNStock.__IP
                         + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
-				
-            	
-		//Les données envoyés au serveur
+
+
+                //Les données envoyés au serveur
                 // ISBN le code scanné
                 // Choice Département pour trouvé le bon stock dans la base de données
-                 String data = isbn+";"+(LocalisationActivity.choiceDepartement) != null?LocalisationActivity.choiceDepartement:"69";
-                
+                String data = isbn + ";" + (LocalisationActivity.choiceDepartement) != null ? LocalisationActivity.choiceDepartement : "69";
+
                 //Création du client pour envoyer les données au serveur de création de produit
-                //Client c = new Client(ScanNStock.__IP,Integer.parseInt(ScanNStock.__PORT),data);
-                
-                //Lecture des données renvoyée par le serveur
-                
-                ConnexionActivity.c.setISBN(isbn);
-                ConnexionActivity.c.data = "3";
-                ConnexionActivity.c.setEvent(true);
-                Toast.makeText(getApplicationContext(), ConnexionActivity.c.getResponseLine(), Toast.LENGTH_LONG).show();
-            	/*Toast.makeText(getApplicationContext(), "Envoi " + isbn + " � " + ScanNStock.__IP + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
-				
-            	ClientBis c = new ClientBis(ScanNStock.__IP,ScanNStock.__PORT);
-				
-				String data = isbn.toString()+";"+(LocalisationActivity.choiceDepartement) != null?LocalisationActivity.choiceDepartement:"69";
-				
-				boolean reply = c.sendToServer(data);
-				if(reply)
-				{
-					Toast.makeText(getApplicationContext(), "Produit trouv� et enregistr� dans la base ! " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
-					
-				}
-				else
-				{
-					Toast.makeText(getApplicationContext(), "Le produit  est introuvable !" + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
-					
-				}
-            	*/
+
+
+                if (ConnexionActivity.c == null) {
+                    try {
+                        c = new Client(ScanNStock.__IP, Integer.parseInt(ScanNStock.__PORT));
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Thread t = new Thread(c);
+                    t.start();
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    String datasServer = c.getResponseLine();
+                    Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();
+                } else {
+                    c = ConnexionActivity.c;
+                }
+
+                c.setISBN(isbn);
+                c.setIdStock(ScanNStock.__STOCK);
+                c.data = "3";
+                c.setEvent(true);
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Toast.makeText(getApplicationContext(), c.getResponseLine(), Toast.LENGTH_LONG).show();
+
             }
         });
-        
-        /*Button bl = (Button) findViewById(R.id.btn_loc);
-        bl.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	
-            	//Toast.makeText(getApplicationContext(), "Localisation ", Toast.LENGTH_LONG).show();
-            	Intent i = new Intent(CaptureActivity.this,LocalisationActivity.class);
-            	startActivity(i);
-            	//ledon();
-            }
-        });*/
-    }
-    
-    Camera cam;
-    void ledon() {
-        cam = Camera.open();     
-        Parameters params = cam.getParameters();
-        params.setFlashMode(Parameters.FLASH_MODE_ON);
-        cam.setParameters(params);
-        cam.startPreview();
-        cam.autoFocus(new Camera.AutoFocusCallback() {
-                    public void onAutoFocus(boolean success, Camera camera) {
-                    }
-                });
-    }
-     
-    void ledoff() {
-        cam.stopPreview();
-        cam.release();
+
+
     }
 
     @Override
@@ -151,8 +127,11 @@ public class CaptureActivity extends DecoderActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (inScanMode) finish();
-            else onResume();
+            if (inScanMode) {
+                finish();
+            } else {
+                onResume();
+            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -185,10 +164,10 @@ public class CaptureActivity extends DecoderActivity
     private void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
         onPause();
         showResults();
-        
+
         btn.setEnabled(true);
         isbn = resultHandler.getDisplayContents().toString();
-        btn.setText("Search to " + isbn );
+        btn.setText("Search to " + isbn);
 
         ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
         if (barcode == null) {
@@ -233,7 +212,7 @@ public class CaptureActivity extends DecoderActivity
         contentsTextView.setText(displayContents);
         // Crudely scale betweeen 22 and 32 -- bigger font for shorter text
         int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
-        
+
         contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
     }
 }

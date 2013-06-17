@@ -282,7 +282,7 @@ public class Client implements Runnable {
     private int port;
     public String data = "";
     public String response = "";
-    private String id, mdp;
+    private String id, mdp,idStock;
     private String isbn;
     private ArrayList<String> associations;
 
@@ -332,7 +332,7 @@ public class Client implements Runnable {
                             }
                             case '1': {
 
-                                message = "Validation;" + getId() + getMdp();
+                                message = "Validation," + getId();
                                 sendMessage(message);
                                 setEvent(false);
                                 break;
@@ -346,7 +346,7 @@ public class Client implements Runnable {
                             }
                             case '3': {
 
-                                message = "isbn,"+getISBN();
+                                message = "isbn,"+getISBN()+";"+idStock;
                                 sendMessage(message);
                                 setEvent(false);
                                 break;
@@ -437,5 +437,9 @@ public class Client implements Runnable {
     
     public ArrayList<String> getAssociations() {
         return associations;
+    }
+
+    public void setIdStock(String __STOCK) {
+        idStock = __STOCK;
     }
 }

@@ -24,7 +24,7 @@
 	android:layout_height="wrap_content"
 	android:text="@string/connex_bdd"
 	android:layout_x="12dp"
-	android:layout_y="57dp" />
+	android:layout_y="70dp" />
 <Spinner
 	android:id="@+id/spinsites"
 	android:layout_width="298dp"
@@ -45,5 +45,5 @@
 	android:layout_height="wrap_content"
 	android:text="@string/btn_validation_config"
 	android:layout_x="15dp"
-	android:layout_y="375dp" />
+	android:layout_y="280dp" />
 </AbsoluteLayout>
