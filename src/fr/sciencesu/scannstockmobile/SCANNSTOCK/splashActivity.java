@@ -1,9 +1,10 @@
-package fr.sciencesu.scannstockmobile.SCANNEUR;
+package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 
 public class splashActivity extends Activity
 {

@@ -152,7 +152,10 @@ package fr.sciencesu.scannstockmobile.SCANNSTOCK;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import java.io.IOException;
+import android.os.Bundle;
+import android.os.Message;
+import fr.sciencesu.sns.hibernate.jpa.Association;
+import java.io.BufferedInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PipedOutputStream;
@@ -274,7 +277,7 @@ public class Client implements Runnable {
     private Socket requestSocket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private String message;
+    private Object message;
     private PipedOutputStream output = new PipedOutputStream();
     public PrintWriter writer = new PrintWriter(output);
     public static String traitement = "";
@@ -285,42 +288,74 @@ public class Client implements Runnable {
     private String id, mdp,idStock;
     private String isbn;
     private ArrayList<String> associations;
-
-    public Client(String IP, int Port) throws IOException {
+    private ConnexionActivity c;
+    
+    public Client(String IP, int Port) {
         ip = IP;
         port = Port;
         associations  = new ArrayList();
+    }
+    
+     public Client(String IP, int Port,ConnexionActivity c) {
+        ip = IP;
+        port = Port;
+        associations  = new ArrayList();   
+        produits = new ArrayList<String>();
+        this.c = c;
     }
 
     public void run() {
         try {
 
-            //1. creating a socket to connect to the server
+            //Création de la socket de connection au serveur
             requestSocket = new Socket(ip, port);
+            //informClientIHM("Connexion serveur en cours","start");
+            if(requestSocket.isConnected())
+            {
+                 //informClientIHM("Connexion serveur etablie","start");
+            }
+            else
+            {
+                //informClientIHM("Connexion serveur erreur","start");
+                //Thread.sleep(1000);
+                //informClientIHM("Connexion serveur erreur","stop");
+                return;
+            }
             System.out.println("Connected to " + ip + " in port " + port + "");
-            //2. get Input and Output streams
+            //Ouverture des streams
             out = new ObjectOutputStream(requestSocket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(requestSocket.getInputStream());
-
-            //3: Communicating with the server
+            //informClientIHM("Connexion serveur etablie","stop");
+            //Communication établie
             do {
                 try {
-                    //sendMessage("Hi my server");
-                    ;
-                    message = (String) in.readObject();
-                    if (!message.equals("") && !message.equals("_")) {
-                        setResponseLine(message);
-                    }
+                    //Envoi en permannence
+                    message = in.readObject();
+                    //message = ois.readObject();
                     
-                    if (!message.equals("") && !message.equals("_") && message.contains("ASSS")) {
-                        setAssociations(message.split(",")[1]);
-                    }
-                    if (!message.equals("_")) {
+                    
+                   
+                        if (!message.equals("") && !message.equals("_")) {
+                            setResponseLine(message.toString());
+                        }
+                    
+                        if (!message.toString().equals("") && !message.toString().equals("_") && message.toString().contains("ASSS")) {
+                            setAssociations(message.toString().split(",")[1]);
+                        }
+                        
+                        if (!message.toString().equals("") && !message.toString().equals("_") && message.toString().contains("PRODUCTS")) {
+                            setProducts(message.toString());
+                        }
+                        
+                        if (!message.equals("_")) {
                         System.out.println("server>" + message);
                         System.out.println("traitement :");
 
-                    }
+                        }
+                    
+                    
+                    //Si validation envoi message
                     if (sendEvent()) {
 
                         switch (data.charAt(0)) {
@@ -335,6 +370,8 @@ public class Client implements Runnable {
                                 message = "Validation," + getId();
                                 sendMessage(message);
                                 setEvent(false);
+                                //informClientIHM("Connexion BDD en cours","start");
+                                
                                 break;
                             }
                             case '2': {
@@ -351,6 +388,18 @@ public class Client implements Runnable {
                                 setEvent(false);
                                 break;
                             }
+                            case '4': {
+
+                                message = "produits";
+                                sendMessage(message);
+                                setEvent(false);
+                                break;
+                            }
+                            default:
+                            {
+                                sendMessage("_");
+                                break;
+                            }
                         }
 
                     } else {
@@ -360,13 +409,13 @@ public class Client implements Runnable {
 
 
                 } catch (Exception classNot) {
-                    System.err.println("data received in unknown format");
+                    System.err.println("Données reçu format ¤");
                 }
             } while (!message.equals("bye"));
         } catch (Exception unknownHost) {
-            System.err.println("You are trying to connect to an unknown host!");
+            System.err.println("connexion à un Hote inconnu");
         } finally {
-            //4: Closing connection
+            //4: Fermeture de la connexion
             try {
                 in.close();
                 out.close();
@@ -378,7 +427,11 @@ public class Client implements Runnable {
         }
     }
 
-    private void sendMessage(String msg) {
+    /**
+     * Envoi du message au serveur
+     * @param msg 
+     */
+    private void sendMessage(Object msg) {
         try {
             out.writeObject(msg);
             out.flush();
@@ -435,11 +488,44 @@ public class Client implements Runnable {
         }
     }
     
+    private void setProducts(String produit)
+    {
+        for (String productElm : produit.split(";")) 
+        {
+            produits.add(productElm);
+        }
+    }
+    
+    ArrayList<String> produits;
+    public ArrayList<String> getProducts()
+    {
+        return produits;
+    }
+    
     public ArrayList<String> getAssociations() {
         return associations;
     }
 
     public void setIdStock(String __STOCK) {
         idStock = __STOCK;
+    }
+
+    private void informClientIHM(String msg,String tags) {
+        if(c != null && !msg.isEmpty())
+        {
+        Message myMessage=c.m_handler.obtainMessage();   
+        myMessage.obj = tags;
+        //Ajouter des données à transmettre au Handler via le Bundle
+        Bundle messageBundle = new Bundle();
+        messageBundle.putString("msg", msg);
+        //Ajouter le Bundle au message
+        myMessage.setData(messageBundle);
+        //Envoyer le message
+        c.m_handler.sendMessage(myMessage);}
+    }
+
+    Association site;
+    Association getSite() {
+        return site;
     }
 }

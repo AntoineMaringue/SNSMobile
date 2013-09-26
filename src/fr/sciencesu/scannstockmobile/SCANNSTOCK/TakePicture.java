@@ -1,4 +1,4 @@
-package fr.sciencesu.scannstockmobile.SCANNEUR;
+package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,6 +25,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 
 public class TakePicture extends Activity implements SurfaceHolder.Callback
 {

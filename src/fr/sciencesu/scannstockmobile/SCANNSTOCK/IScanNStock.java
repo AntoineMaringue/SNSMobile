@@ -3,6 +3,8 @@ package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 public interface IScanNStock 
 {
 
+        
+        
 	public void takePhoto();
 	
 	public void scanBarCode();

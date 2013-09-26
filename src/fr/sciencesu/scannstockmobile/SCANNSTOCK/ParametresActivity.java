@@ -1,6 +1,5 @@
-package fr.sciencesu.scannstockmobile.SCANNEUR;
+package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 public class ParametresActivity extends Activity
 {
 	Button savedParams;

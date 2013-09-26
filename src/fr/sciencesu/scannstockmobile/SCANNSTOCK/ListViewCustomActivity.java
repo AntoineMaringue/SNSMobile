@@ -1,4 +1,4 @@
-package fr.sciencesu.scannstockmobile.SCANNEUR;
+package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
+import fr.sciencesu.scannstockmobile.SCANNEUR.CaptureActivity;
+import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 
 public class ListViewCustomActivity extends Activity
 {
@@ -26,41 +28,41 @@ public class ListViewCustomActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menuprincipal);
  
-        //Récupération de la listview créée dans le fichier main.xml
+        //Rï¿½cupï¿½ration de la listview crï¿½ï¿½e dans le fichier main.xml
         maListViewPerso = (ListView) findViewById(R.id.listviewperso);
  
-        //Création de la ArrayList qui nous permettra de remplire la listView
+        //Crï¿½ation de la ArrayList qui nous permettra de remplire la listView
         ArrayList<HashMap<String, String>> listItem = new ArrayList<HashMap<String, String>>(); 
         
-        listItem.add(createMap("Scan","Scanner un code à barres",String.valueOf(R.drawable.ic_scan)));
+        listItem.add(createMap("Scan",getResources().getString(R.string.Scan),String.valueOf(R.drawable.ic_scan)));
  
-        //On refait la manip plusieurs fois avec des données différentes pour former les items de notre ListView
-        listItem.add(createMap("Paramètres","Paramètres de l'application",String.valueOf(R.drawable.ic_parametres)));
-        listItem.add(createMap("Aide","Aide",String.valueOf(R.drawable.ic_create)));
-        listItem.add(createMap("Contact","Nous contacter",String.valueOf(R.drawable.ic_contact)));
-        listItem.add(createMap("Sortir","Quitter l'application",String.valueOf(R.drawable.ic_exit)));
+        //On refait la manip plusieurs fois avec des donnï¿½es diffï¿½rentes pour former les items de notre ListView
+        listItem.add(createMap("ParamÃ¨tres",getResources().getString(R.string.Parameters),String.valueOf(R.drawable.ic_parametres)));
+        listItem.add(createMap("Aide",getResources().getString(R.string.Aide),String.valueOf(R.drawable.ic_create)));
+        listItem.add(createMap("Contact",getResources().getString(R.string.Contacts),String.valueOf(R.drawable.ic_contact)));
+        listItem.add(createMap("Sortir",getResources().getString(R.string.Sortir),String.valueOf(R.drawable.ic_exit)));
  
-        //Création d'un SimpleAdapter qui se chargera de mettre les items présent dans notre list (listItem) dans la vue affichageitem
+        //Crï¿½ation d'un SimpleAdapter qui se chargera de mettre les items prï¿½sent dans notre list (listItem) dans la vue affichageitem
         SimpleAdapter mSchedule = new SimpleAdapter (this.getBaseContext(), listItem, R.layout.affichageitem,
                new String[] {"img", "titre", "description"}, new int[] {R.id.img, R.id.titre, R.id.description});
  
-        //On attribut à notre listView l'adapter que l'on vient de créer
+        //On attribut ï¿½ notre listView l'adapter que l'on vient de crï¿½er
         maListViewPerso.setAdapter(mSchedule);
  
-        //Enfin on met un écouteur d'évènement sur notre listView
+        //Enfin on met un ï¿½couteur d'ï¿½vï¿½nement sur notre listView
         maListViewPerso.setOnItemClickListener(new OnItemClickListener() {
 			@Override
         	@SuppressWarnings("unchecked")
          	public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-				//on récupère la HashMap contenant les infos de notre item (titre, description, img)
+				//on rï¿½cupï¿½re la HashMap contenant les infos de notre item (titre, description, img)
         		HashMap<String, String> map = (HashMap<String, String>) maListViewPerso.getItemAtPosition(position);
-        		//on créer une boite de dialogue
+        		//on crï¿½er une boite de dialogue
         		//AlertDialog.Builder adb = new AlertDialog.Builder(ListViewCustomActivity.this);
-        		//on attribut un titre à notre boite de dialogue
-        		//adb.setTitle("Sélection Item");
-        		//on insère un message à notre boite de dialogue, et ici on affiche le titre de l'item cliqué
+        		//on attribut un titre ï¿½ notre boite de dialogue
+        		//adb.setTitle("Sï¿½lection Item");
+        		//on insï¿½re un message ï¿½ notre boite de dialogue, et ici on affiche le titre de l'item cliquï¿½
         		//adb.setMessage("Votre choix : "+map.get("titre"));
-        		//on indique que l'on veut le bouton ok à notre boite de dialogue
+        		//on indique que l'on veut le bouton ok ï¿½ notre boite de dialogue
         		//adb.setPositiveButton("Ok", null);
         		//on affiche la boite de dialogue
         		//adb.show();
@@ -71,7 +73,7 @@ public class ListViewCustomActivity extends Activity
                     startActivity(intent);
         		}
         		
-        		else if(map.get("titre").equalsIgnoreCase("Paramètres"))
+        		else if(map.get("titre").equalsIgnoreCase("ParamÃ¨tres"))
         		{
         			Intent intent = new Intent(ListViewCustomActivity.this, ParametresActivity.class);
                     startActivity(intent);
@@ -80,11 +82,11 @@ public class ListViewCustomActivity extends Activity
         		else if(map.get("titre").equalsIgnoreCase("Contact"))
         		{
         			AlertDialog.Builder adb = new AlertDialog.Builder(ListViewCustomActivity.this);
-            		//on attribut un titre à notre boite de dialogue
+            		//on attribut un titre ï¿½ notre boite de dialogue
             		adb.setTitle("Contact");
-            		//on insère un message à notre boite de dialogue, et ici on affiche le titre de l'item cliqué
+            		//on insï¿½re un message ï¿½ notre boite de dialogue, et ici on affiche le titre de l'item cliquï¿½
             		adb.setMessage("CONTACT DE L'APPLICATION : ");
-            		//on indique que l'on veut le bouton ok à notre boite de dialogue
+            		//on indique que l'on veut le bouton ok ï¿½ notre boite de dialogue
             		adb.setPositiveButton("Ok", null);
             		//on affiche la boite de dialogue
             		adb.show();
@@ -98,11 +100,11 @@ public class ListViewCustomActivity extends Activity
         		else if(map.get("titre").equalsIgnoreCase("Aide"))
         		{
         			AlertDialog.Builder adb = new AlertDialog.Builder(ListViewCustomActivity.this);
-            		//on attribut un titre à notre boite de dialogue
+            		//on attribut un titre ï¿½ notre boite de dialogue
             		adb.setTitle("Aide");
-            		//on insère un message à notre boite de dialogue, et ici on affiche le titre de l'item cliqué
+            		//on insï¿½re un message ï¿½ notre boite de dialogue, et ici on affiche le titre de l'item cliquï¿½
             		adb.setMessage("AIDE DE L'APPLICATION : ");
-            		//on indique que l'on veut le bouton ok à notre boite de dialogue
+            		//on indique que l'on veut le bouton ok ï¿½ notre boite de dialogue
             		adb.setPositiveButton("Ok", null);
             		//on affiche la boite de dialogue
             		adb.show();
@@ -114,13 +116,13 @@ public class ListViewCustomActivity extends Activity
 
 
 	private HashMap<String, String> createMap(String string, String string2,String valueOf) {
-		//Création d'une HashMap pour insérer les informations du premier item de notre listView
+		//Crï¿½ation d'une HashMap pour insï¿½rer les informations du premier item de notre listView
 		HashMap<String, String> map = new HashMap<String, String>();
-        //on insère un élément titre que l'on récupérera dans le textView titre créé dans le fichier affichageitem.xml
+        //on insï¿½re un ï¿½lï¿½ment titre que l'on rï¿½cupï¿½rera dans le textView titre crï¿½ï¿½ dans le fichier affichageitem.xml
         map.put("titre", string);
-        //on insère un élément description que l'on récupérera dans le textView description créé dans le fichier affichageitem.xml
+        //on insï¿½re un ï¿½lï¿½ment description que l'on rï¿½cupï¿½rera dans le textView description crï¿½ï¿½ dans le fichier affichageitem.xml
         map.put("description", string2);
-        //on insère la référence à l'image (convertit en String car normalement c'est un int) que l'on récupérera dans l'imageView créé dans le fichier affichageitem.xml
+        //on insï¿½re la rï¿½fï¿½rence ï¿½ l'image (convertit en String car normalement c'est un int) que l'on rï¿½cupï¿½rera dans l'imageView crï¿½ï¿½ dans le fichier affichageitem.xml
         map.put("img", valueOf);
         return map;
 	}

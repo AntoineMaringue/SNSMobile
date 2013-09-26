@@ -1,5 +1,6 @@
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.ConnexionActivity;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.EnumSet;
@@ -70,11 +71,7 @@ public class CaptureActivity extends DecoderActivity {
 
 
                 if (ConnexionActivity.c == null) {
-                    try {
-                        c = new Client(ScanNStock.__IP, Integer.parseInt(ScanNStock.__PORT));
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    c = new Client(ScanNStock.__IP, Integer.parseInt(ScanNStock.__PORT));
                     Thread t = new Thread(c);
                     t.start();
 
