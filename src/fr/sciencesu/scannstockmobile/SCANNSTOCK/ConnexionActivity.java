@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,8 +16,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -26,38 +23,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import fr.sciencesu.scannstockmobile.SCANNEUR.CaptureActivity;
 import fr.sciencesu.scannstockmobile.SCANNEUR.MainActivity;
-import fr.sciencesu.scannstockmobile.SCANNEUR.MyTask.OnMyTaskDone;
 import fr.sciencesu.scannstockmobile.SCANNEUR.R;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
-import fr.sciencesu.sns.hibernate.jpa.Association;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConnexionActivity extends Activity{
-    private static String TAG = "ConnexionActivity";
-    
+    private final Context context = ConnexionActivity.this;   
     private ArrayList<Produit> produits;
     private int num_col;
     
@@ -65,14 +48,12 @@ public class ConnexionActivity extends Activity{
     private EditText edt_mdp;
     private EditText edt_user;
     private Spinner lstSite,lstStock;
-    String isbn = "";
+    private String isbn = "";
     public static Client c;
+    private AlertDialog dialog;    
+    private GridView gvConnex;
+    private Boolean validation_connexion = false;
     
-
-    //String IP = "192.168.1.86";
-    //int PORT = 5000;
-    
-    Context context = this;
     Handler m_handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -125,24 +106,8 @@ public class ConnexionActivity extends Activity{
                 x++;
                 produits.add(p);
             }
-            //System.out.println(products.iterator().next());
-            /*setContentView(R.layout.configurations2);
-            GridView gv = (GridView)findViewById(R.id.gridproducts);
-            ProductAdapter adapter = new ProductAdapter(context, produits);
-            adapter.notifyDataSetChanged();
-            gv.setAdapter(adapter);
-            gv.invalidateViews();*/
            showDialog(1);
-           
-           
-            
-		
-
-    
-
-            
-            
-        }
+         }
     };
     
     public static Bitmap getBitmapFromURL(String src) {
@@ -159,13 +124,11 @@ public class ConnexionActivity extends Activity{
         return null;
     }
 }
-    private AlertDialog dialog;
-    
-    GridView gvConnex;
+   
 
     void setLayoutParams(GridView view){
 		//view.setLayoutParams(new LayoutParams((int)getResources().getDimension(R.dimen.gv_width), 
-				//(int)getResources().getDimension(R.dimen.gv_height)));
+		//		(int)getResources().getDimension(R.dimen.gv_height)));
 		view.setNumColumns(2);
 		view.setColumnWidth((int)getResources().getDimension(R.dimen.gv_column_width));
 		view.setVerticalSpacing((int)getResources().getDimension(R.dimen.gv_ver_spacing));
@@ -202,52 +165,68 @@ public class ConnexionActivity extends Activity{
         //On attribut � notre listView l'adapter que l'on vient de cr�er
         gvConnex.setAdapter(mSchedule);
  
+        
         //Enfin on met un �couteur d'�v�nement sur notre listView
         gvConnex.setOnItemClickListener(new OnItemClickListener() {
 			@Override
         	@SuppressWarnings("unchecked")
          	public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                        
 				//on r�cup�re la HashMap contenant les infos de notre item (titre, description, img)
         		HashMap<String, String> map = (HashMap<String, String>) gvConnex.getItemAtPosition(position);        		
-        		if(map.get("titre").equalsIgnoreCase("configuration"))
+        		
+                        if(map.get("titre").equalsIgnoreCase("configuration"))
         		{
                             Intent i = new Intent(ConnexionActivity.this, ParametresActivity.class);
                             startActivity(i);
         		}
-                        else if(map.get("titre").equalsIgnoreCase("connexion"))
+                        else if(map.get("titre").equalsIgnoreCase("Connexion"))
         		{
-                           new GetAssociationTask("Recherche et génération des associations","recherche des associations en cours").execute();
-        		}
+                           new GetAssociationTask("Connexion serveur et génération des associations","recherche des associations en cours").execute();
+                            if(!validation_connexion)
+                            {
+                                Toast.makeText(context, "Connexion impossible vérifier que le serveur est lancé ou que vous avez une connexion internet", Toast.LENGTH_LONG).show();
+                            }
+                        }
                         else if(map.get("titre").equalsIgnoreCase("Choix association"))
         		{
-                           //Intent i = new Intent(ConnexionActivity.this, ParametresActivity.class);
-                           //startActivity(i);
-                             new GetAssociationTask("Chargement en cours ...","Recherche produits ....").execute();
-        		}
+                           if(!validation_connexion)
+                            {
+                                Toast.makeText(context, "Connexion impossible vérifier que le serveur est lancé ou que vous avez une connexion internet", Toast.LENGTH_LONG).show();
+                            }
+                           else
+                           {
+                          new GetAssociationTask("Chargement en cours ...","Recherche produits ....").execute();
+                           }
+                        }
                         else if(map.get("titre").equalsIgnoreCase("Validation"))
         		{
-                            String site = lstSite.getSelectedItem().toString();
-                        
-                            c.setId(site);
-                            //informClientIHM("Connexion à la base de données en cours","start",5000);
-                            c.data = "1";
-                           c.setEvent(true);
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                            if(!validation_connexion)
+                            {
+                                Toast.makeText(context, "Connexion impossible vérifier que le serveur est lancé ou que vous avez une connexion internet", Toast.LENGTH_LONG).show();
                             }
-                           String datasServer = c.getResponseLine();
-                            Toast.makeText(context, "Sauvegarde de l'id " + datasServer, Toast.LENGTH_LONG).show();
+                            else{
+                                String site = lstSite.getSelectedItem().toString();
+                                c.setId(site);
+                                c.data = "1";
+                                c.setEvent(true);
+                                try 
+                                {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                               String datasServer = c.getResponseLine();
+                               Toast.makeText(context, "Sauvegarde de l'id " + datasServer, Toast.LENGTH_LONG).show();
 
-                            //Enregistrements du site et du stock lié au site
-                            ScanNStock.__SITE = site;
-                            //Insertion du stock de l'association
-                            ScanNStock.__STOCK = datasServer;
-                            //Ouverture de la page principale
-                            Intent intent = new Intent(ConnexionActivity.this, ListViewCustomActivity.class);
-                             startActivity(intent);
-        		
+                                //Enregistrements du site et du stock lié au site
+                                ScanNStock.__SITE = site;
+                                //Insertion du stock de l'association
+                                ScanNStock.__STOCK = datasServer;
+                                //Ouverture de la page principale
+                                Intent intent = new Intent(ConnexionActivity.this, ListViewCustomActivity.class);
+                                 startActivity(intent);
+                            }
         	}}
          });
  
@@ -349,17 +328,22 @@ public class ConnexionActivity extends Activity{
 
     }
 
+    Intent intentGetAssociations;
+    ArrayList<String> listassociations;
     private void generateLstAssociations(Collection<String> data) {
 
-        List<String> list = new ArrayList<String>();
+        listassociations = new ArrayList<String>();
         for (String string : data) 
         {
-            list.add(string);
+            listassociations.add(string);
         }
-        ArrayAdapter<String> dataAdapter;
+        intentGetAssociations = new Intent(this,ListAssociationActivity.class);
+        intentGetAssociations.putStringArrayListExtra("lstAssociations", listassociations);
+        startActivity(intentGetAssociations);
+        /*ArrayAdapter<String> dataAdapter;
         dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        lstSite.setAdapter(dataAdapter);
+        lstSite.setAdapter(dataAdapter);*/
 
     }
    
@@ -426,18 +410,19 @@ public class ConnexionActivity extends Activity{
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
-            String datasServer = c.getResponseLine();
         }
         
-        if(this.subject.contains("associations"))
+        if(validation_connexion = c.isIsConnected())
         {
-            generateAssociation();
-        }
-        else if(this.subject.contains("produits"))
-        {
-            generateProducts();
-        }
-              
+            if(this.subject.contains("associations"))
+            {
+                generateAssociation();
+            }
+            else if(this.subject.contains("produits"))
+            {
+                generateProducts();
+            }
+        }              
         return "";
     }
 
@@ -489,7 +474,7 @@ public class ConnexionActivity extends Activity{
                   
               
                new GetAssociationTask("Chargement","Recherche produits ....").execute();
-                
+              
                
             
                
@@ -543,7 +528,6 @@ public class ConnexionActivity extends Activity{
                 //c.setId(id);
                 //c.setMdp(mdp);
                 c.setId(site);
-                informClientIHM("Connexion à la base de données en cours","start",5000);
                 c.data = "1";
                c.setEvent(true);
                 try {
@@ -558,8 +542,7 @@ public class ConnexionActivity extends Activity{
                 ScanNStock.__SITE = site;
                 //Insertion du stock de l'association
                 ScanNStock.__STOCK = datasServer;
-                
-                informClientIHM("Connexion à la base de données OK ...","stop",1000);
+
                 //Ouverture de la page principale
                 Intent intent = new Intent(ConnexionActivity.this, ListViewCustomActivity.class);
                  startActivity(intent);

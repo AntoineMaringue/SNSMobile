@@ -303,6 +303,14 @@ public class Client implements Runnable {
         produits = new ArrayList<String>();
         this.c = c;
     }
+     
+     private boolean isConnected;
+
+    public boolean isIsConnected() {
+        return isConnected;
+    }
+     
+     
 
     public void run() {
         try {
@@ -312,13 +320,11 @@ public class Client implements Runnable {
             //informClientIHM("Connexion serveur en cours","start");
             if(requestSocket.isConnected())
             {
-                 //informClientIHM("Connexion serveur etablie","start");
+                 isConnected = true;
             }
             else
             {
-                //informClientIHM("Connexion serveur erreur","start");
-                //Thread.sleep(1000);
-                //informClientIHM("Connexion serveur erreur","stop");
+                isConnected = false;
                 return;
             }
             System.out.println("Connected to " + ip + " in port " + port + "");
@@ -414,6 +420,7 @@ public class Client implements Runnable {
             } while (!message.equals("bye"));
         } catch (Exception unknownHost) {
             System.err.println("connexion à un Hote inconnu");
+            isConnected = false;
         } finally {
             //4: Fermeture de la connexion
             try {
