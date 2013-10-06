@@ -1,6 +1,5 @@
 package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -8,16 +7,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import fr.sciencesu.scannstockmobile.SCANNEUR.R;
-public class ParametresActivity extends Activity
+public class ParametresActivity extends AbstractUtilsActivity
 {
 	Button savedParams;
 	EditText port,ip;
 	
+        @Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.params);
-		
+		context = ParametresActivity.this;
 		ip = (EditText)findViewById(R.id.edtIp);
 		port = (EditText)findViewById(R.id.edtPort);
                 
@@ -57,5 +57,11 @@ public class ParametresActivity extends Activity
 			}
 		});
 	}
+        
+        @Override
+    protected void onResume() {
+        super.onResume(); 
+        context = ParametresActivity.this;
+    }
 
 }

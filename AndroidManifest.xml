@@ -46,7 +46,14 @@
             
         </activity>
         
-         <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ParametresActivity"
+        <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ListViewCustomActivity"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher">
+	        
+            
+        </activity>
+        
+         <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ProductActivity"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher">
         </activity>        
@@ -94,6 +101,13 @@
         </activity>
         
         <activity android:name="fr.sciencesu.scannstockmobile.GMAP.MapActivity"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher"
+            android:theme="@android:style/Theme.NoTitleBar"
+            >
+        </activity>
+        
+         <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ListAssociationActivity"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"
             android:theme="@android:style/Theme.NoTitleBar"

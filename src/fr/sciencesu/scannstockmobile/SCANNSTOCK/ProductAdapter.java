@@ -4,7 +4,6 @@
  */
 package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -57,7 +56,7 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
     static int sColors[] = {0xffff0000, 0xff00ff00, 0xff0000ff};
     static int sColorIndex = 0;
 
-    ProductAdapter(Context context, ArrayList<Produit> produits) {
+    public ProductAdapter(Context context, ArrayList<Produit> produits) {
         super(context, 0, produits);
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -180,15 +179,13 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
         title = (TextView) convertView.findViewById(R.id.product_infos);
         image = (ImageView) convertView.findViewById(R.id.product_img);
         
-        new DownloadImageTask(image).execute(product.getImg());
-        //image.setImageResource(R.drawable.ic_android);
+        new DownloadImageTask(image).execute(product.getImgSrc());
         title.setText(product.toString());
         return convertView;
     }
     
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-    //new DownloadImageTask((ImageView) findViewById(R.id.imageView1)).execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
-
+    
     ImageView bmImage;
 
     public DownloadImageTask(ImageView bmImage) {
@@ -203,11 +200,12 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
             mIcon11 = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
-            e.printStackTrace();
+            System.err.println("Error Img source");
         }
         return mIcon11;
     }
 
+    @Override
     protected void onPostExecute(Bitmap result) {
         bmImage.setImageBitmap(result);
     }

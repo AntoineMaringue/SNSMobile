@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,13 +37,12 @@ public class CaptureActivity extends DecoderActivity {
     private View resultView = null;
     private boolean inScanMode = false;
     private Button btn;
-    private String isbn;
-    private Client c;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.capture);
+        context = CaptureActivity.this;
         //Log.v(TAG, "onCreate()");
 
         resultView = findViewById(R.id.result_view);
@@ -70,7 +68,7 @@ public class CaptureActivity extends DecoderActivity {
                 //Création du client pour envoyer les données au serveur de création de produit
 
 
-                if (ConnexionActivity.c == null) {
+                if (c == null) {
                     c = new Client(ScanNStock.__IP, Integer.parseInt(ScanNStock.__PORT));
                     Thread t = new Thread(c);
                     t.start();
@@ -82,23 +80,26 @@ public class CaptureActivity extends DecoderActivity {
                     }
                     String datasServer = c.getResponseLine();
                     Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();
-                } else {
-                    c = ConnexionActivity.c;
-                }
+                } 
 
-                c.setISBN(isbn);
-                c.setIdStock(ScanNStock.__STOCK);
-                c.data = "3";
-                c.setEvent(true);
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Toast.makeText(getApplicationContext(), c.getResponseLine(), Toast.LENGTH_LONG).show();
+                /*c.setISBN(isbn);
+                 c.setIdStock(ScanNStock.__STOCK);
+                 c.data = "3";
+                 c.setEvent(true);
+                 try {
+                 Thread.sleep(15000);
+                 } catch (InterruptedException ex) {
+                 Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                 }
+                 Toast.makeText(getApplicationContext(), c.getResponseLine(), Toast.LENGTH_LONG).show();*/
+                new GetTaskBackground("Chargement", "Recherche produits ....").execute();
 
+                //IntentIntegrator integrator = new IntentIntegrator(ZXingTestActivity.this);
+                //integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
             }
         });
+        
+        
 
 
     }
@@ -113,6 +114,7 @@ public class CaptureActivity extends DecoderActivity {
     protected void onResume() {
         super.onResume();
         Log.v(TAG, "onResume()");
+        context = CaptureActivity.this;
     }
 
     @Override

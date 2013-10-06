@@ -36,6 +36,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.AbstractUtilsActivity;
 
 
 /**
@@ -43,7 +44,7 @@ import android.view.WindowManager;
  * 
  * @author Justin Wetherell (phishman3579@gmail.com)
  */
-public class DecoderActivity extends Activity implements IDecoderActivity, SurfaceHolder.Callback {
+public class DecoderActivity extends AbstractUtilsActivity implements IDecoderActivity, SurfaceHolder.Callback {
 
     private static final String TAG = DecoderActivity.class.getSimpleName();
 

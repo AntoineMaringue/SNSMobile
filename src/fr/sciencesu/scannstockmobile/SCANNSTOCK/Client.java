@@ -294,14 +294,7 @@ public class Client implements Runnable {
         ip = IP;
         port = Port;
         associations  = new ArrayList();
-    }
-    
-     public Client(String IP, int Port,ConnexionActivity c) {
-        ip = IP;
-        port = Port;
-        associations  = new ArrayList();   
         produits = new ArrayList<String>();
-        this.c = c;
     }
      
      private boolean isConnected;
@@ -396,7 +389,7 @@ public class Client implements Runnable {
                             }
                             case '4': {
 
-                                message = "produits";
+                                message = "produits,"+getISBN();
                                 sendMessage(message);
                                 setEvent(false);
                                 break;
@@ -497,7 +490,8 @@ public class Client implements Runnable {
     
     private void setProducts(String produit)
     {
-        for (String productElm : produit.split(";")) 
+        if(produit != null)produits.clear();
+        for (String productElm : produit.trim().split(",")) 
         {
             produits.add(productElm);
         }
@@ -515,20 +509,6 @@ public class Client implements Runnable {
 
     public void setIdStock(String __STOCK) {
         idStock = __STOCK;
-    }
-
-    private void informClientIHM(String msg,String tags) {
-        if(c != null && !msg.isEmpty())
-        {
-        Message myMessage=c.m_handler.obtainMessage();   
-        myMessage.obj = tags;
-        //Ajouter des données à transmettre au Handler via le Bundle
-        Bundle messageBundle = new Bundle();
-        messageBundle.putString("msg", msg);
-        //Ajouter le Bundle au message
-        myMessage.setData(messageBundle);
-        //Envoyer le message
-        c.m_handler.sendMessage(myMessage);}
     }
 
     Association site;
