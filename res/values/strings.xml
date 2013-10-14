@@ -67,4 +67,9 @@
     <string name="Aide">Aide</string>
     <string name="Contacts">Nous contacter</string>
     <string name="Sortir">Quitter l\'application</string>  
+    
+    <string name="menu_connexion">Recherche des associations en cours ...</string>  
+    <string name="menu_choix_association">Generation des associations en cours ...</string>  
+    <string name="menu_liaison">Liaison au stock en cours ...</string>  
+    <string name="menu_parametrage"></string>  
 </resources>

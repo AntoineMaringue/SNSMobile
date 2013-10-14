@@ -1,6 +1,7 @@
 package fr.sciencesu.scannstockmobile.SCANNEUR;
 
-import fr.sciencesu.scannstockmobile.SCANNSTOCK.ConnexionActivity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.EnumSet;
@@ -10,11 +11,12 @@ import java.util.Set;
 import com.google.zxing.Result;
 import com.google.zxing.ResultMetadataType;
 
-import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.ScanNStock;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import fr.sciencesu.scannstockmobile.SCANNSTOCK.Client;
+import fr.sciencesu.scannstockmobile.SCANNSTOCK.ListViewCustomActivity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,23 +55,25 @@ public class CaptureActivity extends DecoderActivity {
 
         btn = (Button) findViewById(R.id.btn_search);
         btn.setEnabled(false);
+        btn.setVisibility(View.GONE);
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                startActivity(new Intent(CaptureActivity.this,ListViewCustomActivity.class));
 
-                Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + ScanNStock.__IP
-                        + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + ScanNStock.__IP
+                  //      + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 
 
                 //Les données envoyés au serveur
                 // ISBN le code scanné
                 // Choice Département pour trouvé le bon stock dans la base de données
-                String data = isbn + ";" + (LocalisationActivity.choiceDepartement) != null ? LocalisationActivity.choiceDepartement : "69";
+                //String data = isbn + ";" + (LocalisationActivity.choiceDepartement) != null ? LocalisationActivity.choiceDepartement : "69";
 
                 //Création du client pour envoyer les données au serveur de création de produit
 
 
-                if (c == null) {
+                /*if (c == null) {
                     c = new Client(ScanNStock.__IP, Integer.parseInt(ScanNStock.__PORT));
                     Thread t = new Thread(c);
                     t.start();
@@ -80,8 +85,10 @@ public class CaptureActivity extends DecoderActivity {
                     }
                     String datasServer = c.getResponseLine();
                     Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();
+                    
+                    btn.setVisibility(View.GONE);
                 } 
-
+                * */
                 /*c.setISBN(isbn);
                  c.setIdStock(ScanNStock.__STOCK);
                  c.data = "3";
@@ -92,7 +99,7 @@ public class CaptureActivity extends DecoderActivity {
                  Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
                  }
                  Toast.makeText(getApplicationContext(), c.getResponseLine(), Toast.LENGTH_LONG).show();*/
-                new GetTaskBackground("Chargement", "Recherche produits ....").execute();
+                
 
                 //IntentIntegrator integrator = new IntentIntegrator(ZXingTestActivity.this);
                 //integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
@@ -103,6 +110,40 @@ public class CaptureActivity extends DecoderActivity {
 
 
     }
+ 
+    public static Camera cam = null;
+    public void flashLightOn(View view) {
+
+    try {
+        if (getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA_FLASH)) {
+            cam = Camera.open();
+            Parameters p = cam.getParameters();
+            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+            cam.setParameters(p);
+            cam.startPreview();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        Toast.makeText(getBaseContext(), "Exception flashLightOn()",
+                Toast.LENGTH_SHORT).show();
+    }
+}
+
+public void flashLightOff(View view) {
+    try {
+        if (getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA_FLASH)) {
+            cam.stopPreview();
+            cam.release();
+            cam = null;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        Toast.makeText(getBaseContext(), "Exception flashLightOff",
+                Toast.LENGTH_SHORT).show();
+    }
+}
 
     @Override
     protected void onDestroy() {
@@ -165,8 +206,9 @@ public class CaptureActivity extends DecoderActivity {
         showResults();
 
         btn.setEnabled(true);
-        isbn = resultHandler.getDisplayContents().toString();
-        btn.setText("Search to " + isbn);
+        btn.setVisibility(View.VISIBLE);
+        isbn = resultHandler.getDisplayContents().toString().trim();
+        btn.setText("Recherche " + isbn);
 
         ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
         if (barcode == null) {
@@ -191,10 +233,16 @@ public class CaptureActivity extends DecoderActivity {
         metaTextView.setVisibility(View.GONE);
         metaTextViewLabel.setVisibility(View.GONE);
         Map<ResultMetadataType, Object> metadata = rawResult.getResultMetadata();
+        String myNotification = "";
         if (metadata != null) {
             StringBuilder metadataText = new StringBuilder(20);
             for (Map.Entry<ResultMetadataType, Object> entry : metadata.entrySet()) {
-                if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
+                
+            ResultMetadataType cle = entry.getKey();
+            Object valeur = entry.getValue();
+            myNotification += "KEY = " + cle + "VALUE = " + valeur;
+            
+            if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
                     metadataText.append(entry.getValue()).append('\n');
                 }
             }
@@ -205,7 +253,7 @@ public class CaptureActivity extends DecoderActivity {
                 metaTextViewLabel.setVisibility(View.VISIBLE);
             }
         }
-
+        //Toast.makeText(context, myNotification, Toast.LENGTH_LONG).show();
         TextView contentsTextView = (TextView) findViewById(R.id.contents_text_view);
         CharSequence displayContents = resultHandler.getDisplayContents();
         contentsTextView.setText(displayContents);

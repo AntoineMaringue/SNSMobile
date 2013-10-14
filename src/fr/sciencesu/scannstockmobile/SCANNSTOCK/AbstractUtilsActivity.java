@@ -20,10 +20,14 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 import fr.sciencesu.scannstockmobile.SCANNEUR.MainActivity;
 import fr.sciencesu.scannstockmobile.SCANNEUR.R;
@@ -48,6 +52,7 @@ public abstract class AbstractUtilsActivity extends Activity {
     protected int num_col;
     protected static Client c;
     protected AlertDialog dialog;
+    protected String nameAssociation;
     protected Boolean validation_connexion = false;
     protected GridView grille_produit_form_server;
     protected String isbn;
@@ -73,7 +78,7 @@ public abstract class AbstractUtilsActivity extends Activity {
             }
         }
 
-        protected void generateLstProducts(ArrayList<String> products) {
+        private void generateLstProducts(ArrayList<String> products) {
 
             if (products != null) {
 
@@ -117,6 +122,9 @@ public abstract class AbstractUtilsActivity extends Activity {
         }
     }
 
+    /**
+     * Téléchargement des images ...
+     */
     protected class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         //new DownloadImageTask((ImageView) findViewById(R.id.imageView1)).execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
 
@@ -147,11 +155,12 @@ public abstract class AbstractUtilsActivity extends Activity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case 1:
-                AlertDialog.Builder builder;
+        AlertDialog.Builder builder;
                 Context mContext = this;
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+        switch (id) {
+            case 1:
+                
                 View layout = inflater.inflate(R.layout.grid_btnnew, null);
                 grille_produit_form_server = (GridView) layout.findViewById(R.id.gridproducts);
                 grille_produit_form_server.setNumColumns(num_col);
@@ -162,6 +171,8 @@ public abstract class AbstractUtilsActivity extends Activity {
                 grille_produit_form_server.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                         Toast.makeText(context, "" + position, Toast.LENGTH_SHORT).show();
+                        if(dialog!=null)
+                            dialog.dismiss();
                     }
                 });
                 Button btnNewProduct = (Button) findViewById(R.id.btnNewProduct);
@@ -178,6 +189,32 @@ public abstract class AbstractUtilsActivity extends Activity {
 
 
                 break;
+                 case 2:
+                    View layout2 = inflater.inflate(R.layout.lstassociations, null);
+                    ListView list = (ListView)layout2.findViewById(R.id.mylstassociation);
+                    list.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+                    //list.setAdapter(new ArrayAdapter<String>(mContext,android.R.layout.simple_list_item_1,listassociations));
+                    ListAdapter adapter2 = new ListAdapter(mContext, listassociations);
+                    list.setAdapter(adapter2);
+                    adapter2.notifyDataSetChanged();
+                    list.invalidateViews();
+                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            
+
+                    public void onItemClick(AdapterView<?> av, View view, int i, long l) 
+                    {
+                        Toast.makeText(context, "Position "+i, Toast.LENGTH_SHORT).show();
+                        nameAssociation = listassociations.get(i);
+                        c.setId(i + "");
+                        if(dialog!=null)
+                            dialog.dismiss();
+
+                    }
+                });
+                builder = new AlertDialog.Builder(mContext);
+                builder.setView(layout2);
+                dialog = builder.create();
+                     break;
             default:
                 dialog = null;
         }
@@ -236,7 +273,8 @@ public abstract class AbstractUtilsActivity extends Activity {
             }
         }
 
-        protected void generateAssociation() {
+        
+        private void generateAssociation() {
 
             c.data = "2";
             c.setEvent(true);
@@ -259,12 +297,12 @@ public abstract class AbstractUtilsActivity extends Activity {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println(ex.toString());
             }
             String datasServer = c.getResponseLine();
 
             //Enregistrements du site et du stock lié au site
-            ScanNStock.__SITE = listassociations.get(Integer.parseInt(c.getId()));
+            ScanNStock.__SITE = nameAssociation;
             //Insertion du stock de l'association
             ScanNStock.__STOCK = Integer.parseInt(c.getId()) + "";
 
@@ -274,7 +312,7 @@ public abstract class AbstractUtilsActivity extends Activity {
         }
     }
 
-    protected void generateProducts() {
+    private void generateProducts() {
 
         c.setISBN(isbn);
         c.setIdStock(ScanNStock.__STOCK);
@@ -301,15 +339,13 @@ public abstract class AbstractUtilsActivity extends Activity {
         for (String string : data) {
             listassociations.add(string);
         }
-        intentGetAssociations = new Intent(this, ListAssociationActivity.class);
-        intentGetAssociations.putStringArrayListExtra("lstAssociations", listassociations);
-        startActivity(intentGetAssociations);
+        showDialog(2);
+        //intentGetAssociations = new Intent(context, ListAssociationActivity.class);
+        //intentGetAssociations.putStringArrayListExtra("lstAssociations", listassociations);
+        //startActivity(intentGetAssociations);
 
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    
 }

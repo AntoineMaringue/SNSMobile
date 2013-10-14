@@ -59,7 +59,7 @@ public class DecoderActivity extends AbstractUtilsActivity implements IDecoderAc
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.decoder);
-        Log.v(TAG, "onCreate()");
+        //Log.v(TAG, "onCreate()");
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

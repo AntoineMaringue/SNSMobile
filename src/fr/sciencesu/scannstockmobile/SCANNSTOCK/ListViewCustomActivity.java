@@ -12,14 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
-import fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity;
 import fr.sciencesu.scannstockmobile.SCANNEUR.CaptureActivity;
-import fr.sciencesu.scannstockmobile.SCANNEUR.MainActivity;
 import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 import static fr.sciencesu.scannstockmobile.SCANNSTOCK.AbstractUtilsActivity.c;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ListViewCustomActivity extends AbstractUtilsActivity {
 
@@ -30,7 +25,30 @@ public class ListViewCustomActivity extends AbstractUtilsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menuprincipal);
         context = ListViewCustomActivity.this;
-        //R�cup�ration de la listview cr��e dans le fichier main.xml
+        init();
+
+    }
+
+    private HashMap<String, String> createMap(String string, String string2, String valueOf) {
+        //Cr�ation d'une HashMap pour ins�rer les informations du premier item de notre listView
+        HashMap<String, String> map = new HashMap<String, String>();
+        //on ins�re un �l�ment titre que l'on r�cup�rera dans le textView titre cr�� dans le fichier affichageitem.xml
+        map.put("titre", string);
+        //on ins�re un �l�ment description que l'on r�cup�rera dans le textView description cr�� dans le fichier affichageitem.xml
+        map.put("description", string2);
+        //on ins�re la r�f�rence � l'image (convertit en String car normalement c'est un int) que l'on r�cup�rera dans l'imageView cr�� dans le fichier affichageitem.xml
+        map.put("img", valueOf);
+        return map;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        context = ListViewCustomActivity.this;
+    }
+
+    private void init() {
+    //R�cup�ration de la listview cr��e dans le fichier main.xml
         maListViewPerso = (ListView) findViewById(R.id.listviewperso);
 
         //Cr�ation de la ArrayList qui nous permettra de remplire la listView
@@ -67,9 +85,10 @@ public class ListViewCustomActivity extends AbstractUtilsActivity {
                     //startActivity(intent);
                     //Huile --> 8002470000674
                     //Nutella --> 3017620429484
-                    isbn = "8002470000674";
+                    //Vittel --> 3048431001545
+                    isbn = "3048431001545";
                     //Toast.makeText(getApplicationContext(), "Envoi " + isbn + " to " + ScanNStock.__IP
-                      //      + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
+                    //      + " sur le port : " + ScanNStock.__PORT, Toast.LENGTH_LONG).show();
 
                     //Création du client pour envoyer les données au serveur de création de produit
                     if (c == null) {
@@ -80,11 +99,13 @@ public class ListViewCustomActivity extends AbstractUtilsActivity {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(MainActivity.class.getName()).log(Level.SEVERE, null, ex);
+                            System.err.println(ex.getMessage());
                         }
                         //String datasServer = c.getResponseLine();
-                       // Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), datasServer, Toast.LENGTH_LONG).show();
                     }
+
+                    //startActivity(new Intent(ListViewCustomActivity.this,AudioPlayerActivity.class));
                     new GetTaskBackground("Chargement", "Recherche produits ....").execute();
                 } else if (map.get("titre").equalsIgnoreCase("Contact")) {
                     AlertDialog.Builder adb = new AlertDialog.Builder(ListViewCustomActivity.this);
@@ -110,26 +131,7 @@ public class ListViewCustomActivity extends AbstractUtilsActivity {
                     adb.show();
                 }
             }
-        });
-
-    }
-
-    private HashMap<String, String> createMap(String string, String string2, String valueOf) {
-        //Cr�ation d'une HashMap pour ins�rer les informations du premier item de notre listView
-        HashMap<String, String> map = new HashMap<String, String>();
-        //on ins�re un �l�ment titre que l'on r�cup�rera dans le textView titre cr�� dans le fichier affichageitem.xml
-        map.put("titre", string);
-        //on ins�re un �l�ment description que l'on r�cup�rera dans le textView description cr�� dans le fichier affichageitem.xml
-        map.put("description", string2);
-        //on ins�re la r�f�rence � l'image (convertit en String car normalement c'est un int) que l'on r�cup�rera dans l'imageView cr�� dans le fichier affichageitem.xml
-        map.put("img", valueOf);
-        return map;
-    }
+        });    
     
-    
-    @Override
-    protected void onResume() {
-        super.onResume(); 
-        context = ListViewCustomActivity.this;
     }
 }

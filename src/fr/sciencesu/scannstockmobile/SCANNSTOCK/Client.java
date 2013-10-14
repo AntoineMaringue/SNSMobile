@@ -4,7 +4,6 @@
  */
 package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 
-
 /**
  *
  * @author Antoine
@@ -152,16 +151,13 @@ package fr.sciencesu.scannstockmobile.SCANNSTOCK;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import android.os.Bundle;
-import android.os.Message;
-import fr.sciencesu.sns.hibernate.jpa.Association;
-import java.io.BufferedInputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /*import java.io.BufferedReader;
@@ -285,25 +281,22 @@ public class Client implements Runnable {
     private int port;
     public String data = "";
     public String response = "";
-    private String id, mdp,idStock;
+    private String id, mdp, idStock;
     private String isbn;
     private ArrayList<String> associations;
     private ConnexionActivity c;
-    
+
     public Client(String IP, int Port) {
         ip = IP;
         port = Port;
-        associations  = new ArrayList();
+        associations = new ArrayList();
         produits = new ArrayList<String>();
     }
-     
-     private boolean isConnected;
+    private boolean isConnected;
 
     public boolean isIsConnected() {
         return isConnected;
     }
-     
-     
 
     public void run() {
         try {
@@ -311,12 +304,9 @@ public class Client implements Runnable {
             //Création de la socket de connection au serveur
             requestSocket = new Socket(ip, port);
             //informClientIHM("Connexion serveur en cours","start");
-            if(requestSocket.isConnected())
-            {
-                 isConnected = true;
-            }
-            else
-            {
+            if (requestSocket.isConnected()) {
+                isConnected = true;
+            } else {
                 isConnected = false;
                 return;
             }
@@ -332,28 +322,28 @@ public class Client implements Runnable {
                     //Envoi en permannence
                     message = in.readObject();
                     //message = ois.readObject();
-                    
-                    
-                   
-                        if (!message.equals("") && !message.equals("_")) {
-                            setResponseLine(message.toString());
-                        }
-                    
-                        if (!message.toString().equals("") && !message.toString().equals("_") && message.toString().contains("ASSS")) {
-                            setAssociations(message.toString().split(",")[1]);
-                        }
-                        
-                        if (!message.toString().equals("") && !message.toString().equals("_") && message.toString().contains("PRODUCTS")) {
-                            setProducts(message.toString());
-                        }
-                        
-                        if (!message.equals("_")) {
+
+
+
+                    if (!message.equals("") && !message.equals("_")) {
+                        setResponseLine(message.toString());
+                    }
+
+                    if (!message.toString().equals("") && !message.toString().equals("_") && message.toString().contains("ASSS")) {
+                        setAssociations(message.toString().split(",")[1]);
+                    }
+
+                    if (!message.toString().equals("") && !message.toString().equals("_") && message.toString().contains("PRODUCTS")) {
+                        setProducts(message.toString());
+                    }
+
+                    if (!message.equals("_")) {
                         System.out.println("server>" + message);
                         System.out.println("traitement :");
 
-                        }
-                    
-                    
+                    }
+
+
                     //Si validation envoi message
                     if (sendEvent()) {
 
@@ -370,7 +360,7 @@ public class Client implements Runnable {
                                 sendMessage(message);
                                 setEvent(false);
                                 //informClientIHM("Connexion BDD en cours","start");
-                                
+
                                 break;
                             }
                             case '2': {
@@ -382,20 +372,19 @@ public class Client implements Runnable {
                             }
                             case '3': {
 
-                                message = "isbn,"+getISBN()+";"+idStock;
+                                message = "isbn," + getISBN() + ";" + idStock;
                                 sendMessage(message);
                                 setEvent(false);
                                 break;
                             }
                             case '4': {
 
-                                message = "produits,"+getISBN();
+                                message = "produits," + getISBN();
                                 sendMessage(message);
                                 setEvent(false);
                                 break;
                             }
-                            default:
-                            {
+                            default: {
                                 sendMessage("_");
                                 break;
                             }
@@ -422,14 +411,15 @@ public class Client implements Runnable {
                 requestSocket.close();
                 System.exit(0);
             } catch (Exception ioException) {
-                ioException.printStackTrace();
+                System.err.println(ioException.toString());
             }
         }
     }
 
     /**
      * Envoi du message au serveur
-     * @param msg 
+     *
+     * @param msg
      */
     private void sendMessage(Object msg) {
         try {
@@ -437,7 +427,7 @@ public class Client implements Runnable {
             out.flush();
             System.out.println("client>" + msg);
         } catch (Exception ioException) {
-            ioException.printStackTrace();
+            System.err.println(ioException.toString());
         }
     }
     private boolean event = false;
@@ -477,42 +467,32 @@ public class Client implements Runnable {
     public void setISBN(String bn) {
         isbn = bn;
     }
-    
+
     public String getISBN() {
         return this.isbn;
     }
 
     private void setAssociations(String string) {
-        for (String association : string.split(";")) {
-            associations.add(association);
-        }
+        associations.addAll(Arrays.asList(string.split(";")));
     }
-    
-    private void setProducts(String produit)
-    {
-        if(produit != null)produits.clear();
-        for (String productElm : produit.trim().split(",")) 
-        {
-            produits.add(productElm);
+
+    private void setProducts(String produit) {
+        if (produit != null) {
+            produits.clear();
         }
+        boolean addAll = produits.addAll(Arrays.asList(produit.trim().split(",")));
     }
-    
     ArrayList<String> produits;
-    public ArrayList<String> getProducts()
-    {
+
+    public ArrayList<String> getProducts() {
         return produits;
     }
-    
+
     public ArrayList<String> getAssociations() {
         return associations;
     }
 
     public void setIdStock(String __STOCK) {
         idStock = __STOCK;
-    }
-
-    Association site;
-    Association getSite() {
-        return site;
     }
 }

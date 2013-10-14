@@ -14,10 +14,7 @@
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT"/>
 	<uses-feature android:name="android.hardware.camera.flash" />
-
-    
-    
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
         <uses-permission  android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -46,18 +43,26 @@
             
         </activity>
         
-        <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ListViewCustomActivity"
+         <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ProductActivity"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher">
-	        
-            
-        </activity>
+        </activity>   
         
-         <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ProductActivity"
+         <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ParametresActivity"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher">
         </activity>        
     	
+        <activity
+            android:name="fr.sciencesu.scannstockmobile.SCANNEUR.AudioPlayerActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+           	    <action android:name="android.intent.action.VIEW" />
+            	<category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="audio/x-mpegurl" android:scheme="http"/> 
+            </intent-filter>
+        </activity>
+        
         <activity android:name="fr.sciencesu.scannstockmobile.SCANNEUR.CaptureActivity"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"
@@ -81,6 +86,13 @@
             android:windowSoftInputMode="stateAlwaysHidden">
            
         </activity>
+        
+        <activity android:name="fr.sciencesu.scannstockmobile.SCANNEUR.InformationProductActivity"
+            android:icon="@drawable/ic_launcher"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+           
+        </activity>
        
 
         <activity android:name="fr.sciencesu.scannstockmobile.SCANNEUR.EncoderActivity"
@@ -95,17 +107,7 @@
             
         </activity>
         
-        <activity android:name="fr.sciencesu.scannstockmobile.GMAP.LocalisationActivity"
-            android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher">
-        </activity>
-        
-        <activity android:name="fr.sciencesu.scannstockmobile.GMAP.MapActivity"
-            android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher"
-            android:theme="@android:style/Theme.NoTitleBar"
-            >
-        </activity>
+       
         
          <activity android:name="fr.sciencesu.scannstockmobile.SCANNSTOCK.ListAssociationActivity"
             android:label="@string/app_name"

@@ -33,11 +33,10 @@
 
  <TextView
         android:id="@+id/product_infos"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="10dp"
-   
-        android:gravity="center_vertical|center_horizontal"
-    android:text=""
+         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:text=""
     />
 </LinearLayout>

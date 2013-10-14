@@ -4,27 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
-import fr.sciencesu.scannstockmobile.SCANNEUR.MainActivity;
 import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 import static fr.sciencesu.scannstockmobile.SCANNSTOCK.AbstractUtilsActivity.c;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ConnexionActivity extends AbstractUtilsActivity {
 
-     private int id_association = -1;
-     private GridView gvConnex;
+    private int id_association = -1;
+    private GridView gvConnex;
 
-     void setLayoutParams(GridView view) {
+    void setLayoutParams(GridView view) {
         //view.setLayoutParams(new LayoutParams((int)getResources().getDimension(R.dimen.gv_width), 
         //		(int)getResources().getDimension(R.dimen.gv_height)));
+        //view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        
         view.setNumColumns(2);
         view.setColumnWidth((int) getResources().getDimension(R.dimen.gv_column_width));
         view.setVerticalSpacing((int) getResources().getDimension(R.dimen.gv_ver_spacing));
@@ -38,6 +38,7 @@ public class ConnexionActivity extends AbstractUtilsActivity {
 
 
     }
+
     private void initializeMenu() {
 
         //R�cup�ration de la listview cr��e dans le fichier main.xml
@@ -64,37 +65,31 @@ public class ConnexionActivity extends AbstractUtilsActivity {
         //Enfin on met un �couteur d'�v�nement sur notre listView
         gvConnex.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            @SuppressWarnings("unchecked")
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 
                 //on r�cup�re la HashMap contenant les infos de notre item (titre, description, img)
                 HashMap<String, String> map = (HashMap<String, String>) gvConnex.getItemAtPosition(position);
 
-                if (map.get("titre").equalsIgnoreCase("configuration")) {
-                    Intent i = new Intent(ConnexionActivity.this, ParametresActivity.class);
-                    startActivity(i);
+                if (map.get("titre").equalsIgnoreCase("Configuration")) {
+
+                    startActivity(new Intent(ConnexionActivity.this, ParametresActivity.class));
                 } else if (map.get("titre").equalsIgnoreCase("Connexion")) {
-                    new GetTaskBackground("Connexion serveur et génération des associations", "recherche des associations en cours").execute();
-                    
+                    new GetTaskBackground("Connexion serveur",getResources().getString(R.string.menu_connexion)).execute();
+
                 } else if (map.get("titre").equalsIgnoreCase("Choix association")) {
                     if (!validation_connexion) {
                         Toast.makeText(context, "Connexion impossible vérifier que le serveur est lancé ou que vous avez une connexion internet", Toast.LENGTH_LONG).show();
                     } else {
-                        new GetTaskBackground("Chargement en cours ...", "Recherche produits ....").execute();
-                    }
+                        new GetTaskBackground("Génération des associations", getResources().getString(R.string.menu_choix_association)).execute();
+ }
+                     
                 } else if (map.get("titre").equalsIgnoreCase("Validation")) {
                     if (!validation_connexion) {
-                        Toast.makeText(context, "Connexion impossible vérifier que le serveur est lancé ou que vous avez une connexion internet", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ConnexionActivity.this, "Connexion impossible vérifier que le serveur est lancé ou que vous avez une connexion internet", Toast.LENGTH_LONG).show();
                     } else {
-                        if (id_association != -1) {
-                            c.setId(id_association + "");
-                            new GetTaskBackground("Liaison ID du stock ","Liaison au stock en cours ...").execute();
-                            
-                            
-                            
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Veuillez choisir une association !", Toast.LENGTH_LONG).show();
-                        }
+                        context = ConnexionActivity.this;
+                       // nameAssociation = listassociations.get(id_association).toString();                            
+                        new GetTaskBackground("Liaison ID du stock ", getResources().getString(R.string.menu_liaison)).execute();  
                     }
                 }
             }
@@ -117,20 +112,22 @@ public class ConnexionActivity extends AbstractUtilsActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.configurations);
         context = ConnexionActivity.this;
+        
+        
+        //startActivity(new Intent(ConnexionActivity.this, Browsable.class));
         initializeMenu();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        context = ConnexionActivity.this;
+        //context = ConnexionActivity.this;
         id_association = getIntent().getIntExtra("id_association", -1);
-        if(listassociations == null || listassociations.isEmpty())
+        if (listassociations == null || listassociations.isEmpty()) {
             listassociations = getIntent().getStringArrayListExtra("lstAssociations");
+        }
         if (id_association != -1) {
             validation_connexion = true;
         }
     }
-
-    
 }

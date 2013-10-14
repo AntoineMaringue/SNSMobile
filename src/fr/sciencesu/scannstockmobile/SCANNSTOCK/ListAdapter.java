@@ -7,7 +7,6 @@ package fr.sciencesu.scannstockmobile.SCANNSTOCK;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -26,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import fr.sciencesu.scannstockmobile.SCANNEUR.R;
 import java.io.InputStream;
@@ -36,9 +36,9 @@ import java.util.List;
  *
  * @author antoi_000
  */
-public class ProductAdapter extends ArrayAdapter<Produit> {
-
-    private List<Produit> produits;
+public class ListAdapter extends ArrayAdapter<String>
+{
+ private List<String> associations;
     private Context context;
     private LayoutInflater inflater;
     private TextView title;
@@ -56,11 +56,11 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
     static int sColors[] = {0xffff0000, 0xff00ff00, 0xff0000ff};
     static int sColorIndex = 0;
 
-    public ProductAdapter(Context context, ArrayList<Produit> produits) {
+    public ListAdapter(Context context, ArrayList<String> produits) {
         super(context, 0, produits);
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.produits = produits;
+        this.associations = produits;
     }
 
     private static void initStatics(Context context) {
@@ -157,8 +157,8 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
 
     @Override
     public int getCount() {
-        if (null != produits) {
-            return produits.size();
+        if (null != associations) {
+            return associations.size();
         } else {
             return 0;
         }
@@ -172,18 +172,12 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final Produit product = this.produits.get(position);
+        final String product = this.associations.get(position);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.item_product, null);
-        title = (TextView) convertView.findViewById(R.id.product_infos);
-        image = (ImageView) convertView.findViewById(R.id.product_img);
-        
-        new DownloadImageTask(image).execute(product.getImgSrc());
-        title.setText(product.getMarque()==null?"":product.getMarque()+"\n"
-                + product.getName()==null?"":product.getName() + "\n" 
-                + product.getDescription()==null?"":product.getDescription() + "\n" 
-                + product.getUnite() + " " + product.getContenance());
+        convertView = inflater.inflate(R.layout.items_association, null);
+        title = (TextView) convertView.findViewById(R.id.association_infos);
+        title.setText(product.toString());
         return convertView;
     }
     
@@ -226,12 +220,12 @@ public class ProductAdapter extends ArrayAdapter<Produit> {
          System.out.println("bgwidht="+bgHeight+"bgheight"+bgWidth);
          System.out.println("fgwidht="+fgHeight+"fgheight"+fgWidth);*/
 
-        Bitmap newbmp = Bitmap.createBitmap(bgWidth, bgHeight, Config.ARGB_8888);
+        Bitmap newbmp = Bitmap.createBitmap(bgWidth, bgHeight, Bitmap.Config.ARGB_8888);
         Canvas cv = new Canvas(newbmp);
         cv.drawBitmap(background, 0, 0, null);
         cv.drawBitmap(foreground, 9, 9, null);
 //        cv.save(Canvas.ALL_SAVE_FLAG);    
 //        cv.restore();
         return newbmp;
-    }
+    }   
 }
